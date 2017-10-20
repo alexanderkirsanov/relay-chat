@@ -1,0 +1,95 @@
+{
+  "name": "relay-chat",
+  "version": "1.0.0",
+  "description": "relay-chat",
+  "main": "index.js",
+  "scripts": {
+    "coverage": "jest --coverage",
+    "development": "concurrently \"npm run dev-client\" \"npm run dev-server\"",
+    "dev-client": "webpack --watch",
+    "dev-server": "cross-env NODE_ENV=development node ./server/server.js --config ./config/development.json",
+    "lint": "eslint src/**/*.js server/**/*.js",
+    "postinstall": "webpack",
+    "start": "npm run development",
+    "pretty": "prettier --tab-width=4 --single-quote --print-width 120 --trailing-comma none --no-bracket-spacing --write \"{{src,data,server},__{tests,mocks}__}/**/*.js\"",
+    "prepush": "npm run pretty && npm test",
+    "test": "jest",
+    "webpack": "webpack"
+  },
+  "dependencies": {
+    "babel-plugin-relay": "^1.4.1",
+    "babel-polyfill": "^6.26.0",
+    "compression": "1.7.0",
+    "config": "1.26.1",
+    "cookie-parser": "latest",
+    "core-js": "^2.5.1",
+    "css-loader": "^0.28.7",
+    "es6-error": "^4.0.2",
+    "express": "4.14.0",
+    "express-graphql": "^0.6.11",
+    "graphql": "^0.11.7",
+    "graphql-relay": "^0.5.3",
+    "material-ui": "^1.0.0-beta.16",
+    "material-ui-icons": "^1.0.0-beta.16",
+    "monet": "^0.8.10",
+    "prop-types": "latest",
+    "query-string": "^5.0.0",
+    "ramda": "^0.25.0",
+    "react": "^15.6.2",
+    "react-dom": "^15.6.2",
+    "react-relay": "^1.4.1",
+    "request-promise": "latest",
+    "style-loader": "^0.18.2",
+    "svg-react-loader": "^0.4.5",
+    "winston": "2.3.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.13.2",
+    "babel-eslint": "^7.2.1",
+    "babel-loader": "^6.4.1",
+    "babel-plugin-ramda": "^1.4.3",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.16.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.11.1",
+    "body-parser": "latest",
+    "concurrently": "^3.5.0",
+    "cross-env": "5.0.1",
+    "enzyme": "^3.1.0",
+    "enzyme-adapter-react-15": "^1.0.2",
+    "eslint": "^4.1.1",
+    "eslint-plugin-react": "7.1.0",
+    "html-webpack-plugin": "latest",
+    "husky": "^0.14.3",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^17.0.3",
+    "jest-css-modules": "^1.1.0",
+    "less": "^2.7.2",
+    "less-loader": "^4.0.3",
+    "prettier": "^1.7.0",
+    "pretty": "^2.0.0",
+    "webpack": "^2.3.3"
+  },
+  "jest": {
+    "transform": {
+      ".*": "<rootDir>/node_modules/jest-css-modules"
+    },
+    "moduleNameMapper": {
+      "\\.(css|less)$": "identity-obj-proxy"
+    },
+    "coverageReporters": [
+      "lcov"
+    ],
+    "unmockedModulePathPatterns": [
+      "react",
+      "react-dom"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "data/**/*.{js,jsx}",
+      "!node_modules/**",
+      "!dist/**"
+    ]
+  }
+}
