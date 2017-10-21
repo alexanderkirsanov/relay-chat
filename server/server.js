@@ -4,8 +4,8 @@ const compression = require('compression');
 const http = require('http');
 const path = require('path');
 const winston = require('winston');
-const graphQLHTTP  = require('express-graphql');
-const {schema}  = require('../data/schema');
+const graphQLHTTP = require('express-graphql');
+const {schema} = require('../data/schema');
 
 const app = express();
 app.logger = new winston.Logger({
