@@ -114,7 +114,7 @@ const GraphQLNewMessageMutation = mutationWithClientMutationId({
         messageEdge: {
             type: GraphQLMessageEdge,
             resolve: ({localMessageId}) => {
-                const message = getMessages(localMessageId);
+                const message = getMessage(localMessageId);
                 return {
                     cursor: cursorForObjectInConnection(getMessages(), message),
                     node: message

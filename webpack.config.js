@@ -6,7 +6,7 @@ const config = require('config');
 
 module.exports = {
     entry: {
-        app: path.resolve(__dirname, './src/'),
+        app: path.resolve(__dirname, './src/app.js'),
         react: [
             'react',
             'react-dom'

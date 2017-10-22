@@ -58,6 +58,12 @@ describe('schema tests', () => {
                             }
                         }
                     }               
+                },
+                messageEdge {
+                    node {
+                        id
+                        text
+                    }
                 }
             }
         }`;
@@ -67,6 +73,7 @@ describe('schema tests', () => {
                 text: 'test',
                 edited: false
             });
+            expect(data.newMessage.messageEdge.node.text).toBe('test');
         });
     });
     it('should run edit message mutation correctly and update date and edited flag', () => {

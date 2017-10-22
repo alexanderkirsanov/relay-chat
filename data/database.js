@@ -56,7 +56,6 @@ const getViewer = () => {
     return getUser('me');
 };
 clearAll();
-
 module.exports = {
     Message,
     User,
