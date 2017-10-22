@@ -14,6 +14,7 @@
     "pretty": "prettier --tab-width=4 --single-quote --print-width 120 --trailing-comma none --no-bracket-spacing --write \"{{src,data,server},__{tests,mocks}__}/**/*.js\"",
     "prepush": "npm run pretty && npm test",
     "test": "jest",
+    "update-schema": "node ./scripts/updateSchema.js",
     "webpack": "webpack"
   },
   "dependencies": {
@@ -63,10 +64,11 @@
     "html-webpack-plugin": "latest",
     "husky": "^0.14.3",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^17.0.3",
+    "jest": "^21.2.1",
     "jest-css-modules": "^1.1.0",
     "less": "^2.7.2",
     "less-loader": "^4.0.3",
+    "mockdate": "^2.0.2",
     "prettier": "^1.7.0",
     "pretty": "^2.0.0",
     "webpack": "^2.3.3"

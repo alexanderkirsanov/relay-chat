@@ -9,14 +9,23 @@ const {
     getViewer,
     clearAll
 } = require('../database');
+const MockDate = require('mockdate');
 
 describe('Basic DB tests', () => {
     describe('Messages operations tests', () => {
         beforeEach(clearAll);
+        afterEach(MockDate.reset);
         it('should add message to db and return id', () => {
             const messageId = addMessage('text');
             expect(messageId).toBeDefined();
-            expect(getMessages()).toEqual([{date: null, edited: null, id: '0', text: 'text', user: 'me'}]);
+            expect(getMessages()).toMatchObject([{edited: false, id: '0', text: 'text', user: 'me'}]);
+        });
+        it('should add message to db and set current time and edited false', () => {
+            const messageId = addMessage('text');
+            expect(messageId).toBeDefined();
+            const message = getMessages()[0];
+            expect(message.date).toBeDefined();
+            expect(message.edited).toBe(false);
         });
         it("should generate unique id's", () => {
             const firstMsgId = addMessage('firstMessage');
@@ -33,7 +42,9 @@ describe('Basic DB tests', () => {
         it('should change message text correctly', () => {
             const initText = 'first message';
             const newText = 'new text';
+            MockDate.set(1508666062596);
             const msgId = addMessage(initText);
+            MockDate.set(1508666062597);
             const oldDate = getMessage(msgId).date;
             changeMessage(msgId, newText);
             const changedMessage = getMessage(msgId);

@@ -10,7 +10,7 @@ class Message {
     }
 }
 
-export class User {}
+class User {}
 
 let db = {};
 let nextMessageId;
@@ -29,13 +29,14 @@ const deleteOp = curry((table, condition) => {
 });
 const clearAll = () => {
     db = {
-        Users: [{id: 'me'}]
+        Users: [{id: 'me'}],
+        Messages: []
     };
     nextMessageId = 0;
 };
 
 const byId = eId => ({id}) => id === eId;
-const createMessage = text => new Message(`${nextMessageId++}`, null, null, text);
+const createMessage = text => new Message(`${nextMessageId++}`, undefined, undefined, text);
 const findById = eId => find(byId(eId));
 
 const addMessage = pipe(createMessage, write('Messages'), prop('id'));
