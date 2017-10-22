@@ -10,6 +10,8 @@ const mutation = graphql`
                 node {
                     id
                     text
+                    edited
+                    date
                 }
             }
             viewer {
@@ -47,6 +49,8 @@ function commit(environment, text, user) {
             const node = store.create(id, 'Message');
             node.setValue(text, 'text');
             node.setValue(id, 'id');
+            node.setValue(new Date().getTime(), 'date');
+            node.setValue(false, 'edited');
             const newEdge = store.create('client:newEdge:' + tempID++, 'MessageEdge');
             newEdge.setLinkedRecord(node, 'node');
             sharedUpdater(store, user, newEdge);

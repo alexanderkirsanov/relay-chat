@@ -9,12 +9,10 @@ const {
     getViewer,
     clearAll
 } = require('../database');
-const MockDate = require('mockdate');
 
 describe('Basic DB tests', () => {
     describe('Messages operations tests', () => {
         beforeEach(clearAll);
-        afterEach(MockDate.reset);
         it('should add message to db and return id', () => {
             const messageId = addMessage('text');
             expect(messageId).toBeDefined();
@@ -42,15 +40,11 @@ describe('Basic DB tests', () => {
         it('should change message text correctly', () => {
             const initText = 'first message';
             const newText = 'new text';
-            MockDate.set(1508666062596);
             const msgId = addMessage(initText);
-            MockDate.set(1508666062597);
-            const oldDate = getMessage(msgId).date;
             changeMessage(msgId, newText);
             const changedMessage = getMessage(msgId);
             expect(changedMessage.text).toBe(newText);
             expect(changedMessage.edited).toBe(true);
-            expect(changedMessage.date).not.toBe(oldDate);
         });
         it('should remove message correctly', () => {
             const firstMsgId = addMessage('firstMessage');
@@ -64,10 +58,10 @@ describe('Basic DB tests', () => {
     });
     describe('Users operations tests', () => {
         it('should return all users', () => {
-            expect(getUsers()).toEqual([{id: 'me'}]);
+            expect(getUsers()).toEqual([{id: 'me', avatar: 'user'}]);
         });
-        it('should return a user id by id', () => {
-            expect(getUser('me')).toEqual('me');
+        it('should return a user by id', () => {
+            expect(getUser('me').id).toEqual('me');
         });
         it('should return a view for current user', () => {
             expect(getViewer()).toEqual('me');

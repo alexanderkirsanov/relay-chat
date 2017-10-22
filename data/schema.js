@@ -81,6 +81,10 @@ const GraphQLUser = new GraphQLObjectType({
     name: 'User',
     fields: {
         id: globalIdField('User'),
+        avatar: {
+            type: GraphQLString,
+            resolve: () => getUser(getViewer()).avatar
+        },
         messages: {
             type: MessagesConnection,
             args: connectionArgs,

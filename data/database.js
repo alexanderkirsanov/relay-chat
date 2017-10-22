@@ -29,7 +29,7 @@ const deleteOp = curry((table, condition) => {
 });
 const clearAll = () => {
     db = {
-        Users: [{id: 'me'}],
+        Users: [{id: 'me', avatar: 'user'}],
         Messages: []
     };
     nextMessageId = 0;
@@ -43,17 +43,16 @@ const addMessage = pipe(createMessage, write('Messages'), prop('id'));
 const changeMessage = (id, text) => {
     const message = getMessage(id);
     message.text = text;
-    message.date = new Date().getTime();
     message.edited = true;
 };
 const getMessages = (condition = identity) => read('Messages', condition);
 const getMessage = id => getMessages(findById(id));
 const removeMessage = id => deleteOp('Messages', pipe(byId(id), not));
 const getUsers = (condition = identity) => read('Users', condition);
-const getUser = pipe(findById, getUsers, prop('id'));
+const getUser = pipe(findById, getUsers);
 
 const getViewer = () => {
-    return getUser('me');
+    return pipe(getUser, prop('id'))('me');
 };
 clearAll();
 module.exports = {

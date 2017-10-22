@@ -47,6 +47,7 @@ describe('schema tests', () => {
             newMessage (input: {text: "test"}) {
                 viewer {
                     totalCount,
+                    avatar,
                     messages {
                         edges {
                             cursor

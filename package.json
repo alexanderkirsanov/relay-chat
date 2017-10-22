@@ -9,7 +9,7 @@
     "dev-client": "webpack --watch",
     "dev-server": "cross-env NODE_ENV=development node ./server/server.js --config ./config/development.json",
     "lint": "eslint src/**/*.js server/**/*.js",
-    "postinstall": "concurrently \"npm run webpack\" \"npm run update-schema\"",
+    "postinstall": "npm run update-schema && npm run relay && npm run webpack",
     "start": "npm run development",
     "relay": "relay-compiler --src ./src --schema data/schema.graphql",
     "pretty": "prettier --tab-width=4 --single-quote --print-width 120 --trailing-comma none --no-bracket-spacing --write \"{{src,data,server},__{tests,mocks}__}/**/*.js\"",
