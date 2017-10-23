@@ -20,7 +20,7 @@ const styles = () => ({
     }
 });
 
-class ChatDialog extends React.Component {
+class ChatDialog extends React.PureComponent {
     renderMessages() {
         return this.props.chat.messages.edges.map(edge => (
             <Message key={edge.node.id} message={edge.node} chat={this.props.chat} />
@@ -42,6 +42,7 @@ class ChatDialog extends React.Component {
         classes: PropTypes.object
     };
 }
+export {ChatDialog as PureChatDialog};
 
 export default createFragmentContainer(withStyles(styles)(ChatDialog), {
     chat: graphql`

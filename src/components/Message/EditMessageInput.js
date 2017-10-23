@@ -61,3 +61,4 @@ class EditMessageInput extends React.Component {
 }
 
 export default withStyles(styles)(EditMessageInput);
+export {EditMessageInput as PureEditMessageInput};

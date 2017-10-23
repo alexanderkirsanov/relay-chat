@@ -111,3 +111,4 @@ export default createFragmentContainer(withStyles(styles)(Message), {
         }
     `
 });
+export {Message as PureMessage};
