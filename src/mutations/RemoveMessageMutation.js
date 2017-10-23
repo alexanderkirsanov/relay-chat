@@ -5,20 +5,20 @@ const mutation = graphql`
     mutation RemoveMessageMutation($input: RemoveMessageInput!) {
         removeMessage(input: $input) {
             deletedMessageId
-            viewer {
+            chat {
                 totalCount
             }
         }
     }
 `;
 
-function sharedUpdater(store, user, deletedID) {
-    const userProxy = store.get(user.id);
-    const conn = ConnectionHandler.getConnection(userProxy, 'ChatDialog_messages');
+function sharedUpdater(store, chat, deletedID) {
+    const chatProxy = store.get(chat.id);
+    const conn = ConnectionHandler.getConnection(chatProxy, 'ChatDialog_messages');
     ConnectionHandler.deleteNode(conn, deletedID);
 }
 
-function commit(environment, message, user) {
+function commit(environment, message, chat) {
     return commitMutation(environment, {
         mutation,
         variables: {
@@ -26,10 +26,10 @@ function commit(environment, message, user) {
         },
         updater: store => {
             const payload = store.getRootField('removeMessage');
-            sharedUpdater(store, user, payload.getValue('deletedMessageId'));
+            sharedUpdater(store, chat, payload.getValue('deletedMessageId'));
         },
         optimisticUpdater: store => {
-            sharedUpdater(store, user, message.id);
+            sharedUpdater(store, chat, message.id);
         }
     });
 }

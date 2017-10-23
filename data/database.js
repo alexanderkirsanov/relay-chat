@@ -11,6 +11,7 @@ class Message {
 }
 
 class User {}
+class Chat {}
 
 let db = {};
 let nextMessageId;
@@ -51,13 +52,14 @@ const removeMessage = id => deleteOp('Messages', pipe(byId(id), not));
 const getUsers = (condition = identity) => read('Users', condition);
 const getUser = pipe(findById, getUsers);
 
-const getViewer = () => {
-    return pipe(getUser, prop('id'))('me');
+const getChat = () => {
+    return 'mainChat';
 };
 clearAll();
 module.exports = {
     Message,
     User,
+    Chat,
     addMessage,
     changeMessage,
     getMessage,
@@ -65,6 +67,6 @@ module.exports = {
     removeMessage,
     getUsers,
     getUser,
-    getViewer,
+    getChat,
     clearAll
 };

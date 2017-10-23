@@ -22,12 +22,13 @@ const {
 const {
     Message,
     User,
+    Chat,
     addMessage,
     changeMessage,
     getMessage,
     getMessages,
     getUser,
-    getViewer,
+    getChat,
     removeMessage
 } = require('./database');
 const {prop} = require('ramda');
@@ -39,6 +40,8 @@ const {nodeInterface, nodeField} = nodeDefinitions(
             return getMessage(id);
         } else if (type === 'User') {
             return getUser(id);
+        } else if (type === 'Chat') {
+            return getChat();
         }
         return null;
     },
@@ -47,10 +50,24 @@ const {nodeInterface, nodeField} = nodeDefinitions(
             return GraphQLMessage;
         } else if (obj instanceof User) {
             return GraphQLUser;
+        } else if (obj instanceof Chat) {
+            return GraphQLChat;
         }
         return null;
     }
 );
+
+const GraphQLUser = new GraphQLObjectType({
+    name: 'User',
+    fields: {
+        id: globalIdField('User'),
+        avatar: {
+            type: GraphQLString,
+            resolve: () => getUser('me').avatar
+        }
+    },
+    interfaces: [nodeInterface]
+});
 
 const GraphQLMessage = new GraphQLObjectType({
     name: 'Message',
@@ -67,6 +84,10 @@ const GraphQLMessage = new GraphQLObjectType({
         date: {
             type: GraphQLString,
             resolve: prop('date')
+        },
+        user: {
+            type: GraphQLUser,
+            resolve: obj => getUser(obj.user)
         }
     },
     interfaces: [nodeInterface]
@@ -77,14 +98,10 @@ const {connectionType: MessagesConnection, edgeType: GraphQLMessageEdge} = conne
     nodeType: GraphQLMessage
 });
 
-const GraphQLUser = new GraphQLObjectType({
-    name: 'User',
+const GraphQLChat = new GraphQLObjectType({
+    name: 'Chat',
     fields: {
-        id: globalIdField('User'),
-        avatar: {
-            type: GraphQLString,
-            resolve: () => getUser(getViewer()).avatar
-        },
+        id: globalIdField('Chat'),
         messages: {
             type: MessagesConnection,
             args: connectionArgs,
@@ -93,17 +110,20 @@ const GraphQLUser = new GraphQLObjectType({
         totalCount: {
             type: GraphQLInt,
             resolve: () => getMessages().length
+        },
+        user: {
+            type: GraphQLUser,
+            resolve: () => getUser('me')
         }
     },
     interfaces: [nodeInterface]
 });
-
 const Query = new GraphQLObjectType({
     name: 'Query',
     fields: {
-        viewer: {
-            type: GraphQLUser,
-            resolve: () => getViewer()
+        chat: {
+            type: GraphQLChat,
+            resolve: () => getChat()
         },
         node: nodeField
     }
@@ -125,9 +145,9 @@ const GraphQLNewMessageMutation = mutationWithClientMutationId({
                 };
             }
         },
-        viewer: {
-            type: GraphQLUser,
-            resolve: () => getViewer()
+        chat: {
+            type: GraphQLChat,
+            resolve: () => getChat()
         }
     },
     mutateAndGetPayload: ({text}) => {
@@ -146,9 +166,9 @@ const GraphQLRemoveMessageMutation = mutationWithClientMutationId({
             type: GraphQLID,
             resolve: ({id}) => id
         },
-        viewer: {
-            type: GraphQLUser,
-            resolve: () => getViewer()
+        chat: {
+            type: GraphQLChat,
+            resolve: () => getChat()
         }
     },
     mutateAndGetPayload: ({id}) => {

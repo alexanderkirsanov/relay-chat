@@ -6,19 +6,19 @@ describe('schema tests', () => {
     beforeEach(clearAll);
     it('should initially show 0 messages', () => {
         const query = `query { 
-            viewer {
+            chat {
                 totalCount  
             }
         }`;
         const rootValue = {};
         return graphql(schema, query, rootValue).then(({data}) => {
-            expect(data.viewer.totalCount).toBe(0);
+            expect(data.chat.totalCount).toBe(0);
         });
     });
     it('should show all messages on request', () => {
         addMessage('test');
         const query = `query { 
-            viewer {
+            chat {
                 totalCount,
                 messages {
                     edges {
@@ -27,7 +27,10 @@ describe('schema tests', () => {
                             id
                             text
                             date
-                            edited
+                            edited,
+                            user {
+                                    avatar
+                                }
                         }
                     }
                 }
@@ -35,19 +38,19 @@ describe('schema tests', () => {
         }`;
         const rootValue = {};
         return graphql(schema, query, rootValue).then(({data}) => {
-            expect(data.viewer.totalCount).toBe(1);
-            expect(data.viewer.messages.edges[0].node).toMatchObject({
+            expect(data.chat.totalCount).toBe(1);
+            expect(data.chat.messages.edges[0].node).toMatchObject({
                 text: 'test',
                 edited: false
             });
+            expect(data.chat.messages.edges[0].node.user.avatar).toBe('user');
         });
     });
     it('should run add message mutation correctly', () => {
         const query = `mutation { 
             newMessage (input: {text: "test"}) {
-                viewer {
+                chat {
                     totalCount,
-                    avatar,
                     messages {
                         edges {
                             cursor
@@ -55,7 +58,10 @@ describe('schema tests', () => {
                                 id
                                 text
                                 date
-                                edited
+                                edited,
+                                user {
+                                    avatar
+                                }
                             }
                         }
                     }               
@@ -70,7 +76,7 @@ describe('schema tests', () => {
         }`;
         const rootValue = {};
         return graphql(schema, query, rootValue).then(({data}) => {
-            expect(data.newMessage.viewer.messages.edges[0].node).toMatchObject({
+            expect(data.newMessage.chat.messages.edges[0].node).toMatchObject({
                 text: 'test',
                 edited: false
             });
@@ -80,7 +86,7 @@ describe('schema tests', () => {
     it('should run edit message mutation correctly and update date and edited flag', () => {
         const addQuery = `mutation { 
             newMessage (input: {text: "test"}) {
-                viewer {
+                chat {
                     totalCount,
                     messages {
                         edges {
@@ -97,7 +103,7 @@ describe('schema tests', () => {
         let id, date;
         return graphql(schema, addQuery, rootValue)
             .then(({data}) => {
-                const node = data.newMessage.viewer.messages.edges[0].node;
+                const node = data.newMessage.chat.messages.edges[0].node;
                 id = node.id;
                 date = node.date;
                 const query = `mutation { 
@@ -122,7 +128,7 @@ describe('schema tests', () => {
     it('should run remove message mutation correctly', () => {
         const addQuery = `mutation { 
             newMessage (input: {text: "test"}) {
-                viewer {
+                chat {
                     totalCount,
                     messages {
                         edges {
@@ -139,7 +145,7 @@ describe('schema tests', () => {
         let id;
         return graphql(schema, addQuery, rootValue)
             .then(({data}) => {
-                const node = data.newMessage.viewer.messages.edges[0].node;
+                const node = data.newMessage.chat.messages.edges[0].node;
                 id = node.id;
                 const query = `mutation { 
                 removeMessage (input: {id: "${id}"}) {

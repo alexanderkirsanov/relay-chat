@@ -6,7 +6,7 @@ const {
     removeMessage,
     getUsers,
     getUser,
-    getViewer,
+    getChat,
     clearAll
 } = require('../database');
 
@@ -63,8 +63,8 @@ describe('Basic DB tests', () => {
         it('should return a user by id', () => {
             expect(getUser('me').id).toEqual('me');
         });
-        it('should return a view for current user', () => {
-            expect(getViewer()).toEqual('me');
+        it('should return a chat name', () => {
+            expect(getChat()).toEqual('mainChat');
         });
     });
 });

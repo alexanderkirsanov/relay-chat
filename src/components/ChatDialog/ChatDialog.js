@@ -1,22 +1,32 @@
 import React from 'react';
 import {createFragmentContainer, graphql} from 'react-relay';
 import List from 'material-ui/List';
+import {withStyles} from 'material-ui/styles';
 import Message from '../Message/Message';
+const styles = theme => ({
+    list: {
+        width: 500,
+        height: 600,
+        overflow: 'auto'
+    }
+});
+
 class ChatDialog extends React.Component {
     renderMessages() {
-        return this.props.viewer.messages.edges.map(edge => (
-            <Message key={edge.node.id} message={edge.node} viewer={this.props.viewer} />
+        return this.props.chat.messages.edges.map(edge => (
+            <Message key={edge.node.id} message={edge.node} chat={this.props.chat} />
         ));
     }
 
     render() {
-        return <List>{this.renderMessages()}</List>;
+        const {classes} = this.props;
+        return <List className={classes.list}>{this.renderMessages()}</List>;
     }
 }
 
-export default createFragmentContainer(ChatDialog, {
-    viewer: graphql`
-        fragment ChatDialog_viewer on User {
+export default createFragmentContainer(withStyles(styles)(ChatDialog), {
+    chat: graphql`
+        fragment ChatDialog_chat on Chat {
             messages(first: 2147483647) @connection(key: "ChatDialog_messages") {
                 edges {
                     node {
@@ -27,7 +37,6 @@ export default createFragmentContainer(ChatDialog, {
             }
             id
             totalCount
-            ...Message_viewer
         }
     `
 });

@@ -10,7 +10,8 @@ import ChatDialog from '../ChatDialog/ChatDialog';
 const styles = theme => ({
     container: {
         display: 'flex',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        width: 500
     },
     textField: {
         marginLeft: theme.spacing.unit,
@@ -21,21 +22,19 @@ const styles = theme => ({
 
 class ChatApp extends React.Component {
     _handleTextInputSave = text => {
-        NewMessageMutation.commit(this.props.relay.environment, text, this.props.viewer);
+        NewMessageMutation.commit(this.props.relay.environment, text, this.props.chat);
     };
 
     render() {
-        const messagesCount = this.props.viewer.totalCount;
+        const messagesCount = this.props.chat.totalCount;
         const {classes} = this.props;
         return (
             <div className={classes.container}>
-                <section>
-                    <header>
-                        <h1>
-                            {messagesCount} {pluralize('item', messagesCount)}
-                        </h1>
-                    </header>
-                    <ChatDialog viewer={this.props.viewer} />
+                <div>
+                    <h1>
+                        {messagesCount} {pluralize('item', messagesCount)}
+                    </h1>
+                    <ChatDialog chat={this.props.chat} />
                     <TextField
                         placeholder="Enter your message..."
                         onKeyPress={event => {
@@ -48,18 +47,21 @@ class ChatApp extends React.Component {
                         className={classes.textField}
                         margin="normal"
                     />
-                </section>
+                </div>
             </div>
         );
     }
 }
 
 export default createFragmentContainer(withStyles(styles)(ChatApp), {
-    viewer: graphql`
-        fragment ChatApp_viewer on User {
+    chat: graphql`
+        fragment ChatApp_chat on Chat {
             id
             totalCount
-            ...ChatDialog_viewer
+            user {
+                avatar
+            }
+            ...ChatDialog_chat
         }
     `
 });

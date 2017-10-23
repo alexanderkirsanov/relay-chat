@@ -35,15 +35,15 @@ ReactDOM.render(
         environment={modernEnvironment}
         query={graphql`
             query appQuery {
-                viewer {
-                    ...ChatApp_viewer
+                chat {
+                    ...ChatApp_chat
                 }
             }
         `}
         variables={{}}
         render={({error, props}) => {
             if (props) {
-                return <ChatApp viewer={props.viewer} />;
+                return <ChatApp chat={props.chat} />;
             } else {
                 return <div>Loading</div>;
             }

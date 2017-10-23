@@ -25,7 +25,7 @@ class Message extends React.Component {
         isEditing: false
     };
     removeMessage = () => {
-        RemoveMessageMutation.commit(this.props.relay.environment, this.props.message, this.props.viewer);
+        RemoveMessageMutation.commit(this.props.relay.environment, this.props.message, this.props.chat);
     };
     toggleEdit = () => {
         this.setState({isEditing: !this.state.isEditing});
@@ -44,7 +44,10 @@ class Message extends React.Component {
         return (
             <div>
                 <ListItem dense button className={classes.listItem}>
-                    <Avatar className={classes.avatar}> {getAvatarText(this.props.viewer.avatar)} </Avatar>
+                    <Avatar className={classes.avatar}>
+                        {' '}
+                        {getAvatarText(this.props.message.user ? this.props.message.user.avatar : 'User')}{' '}
+                    </Avatar>
                     <ListItemText primary={this.props.message.text} secondary={convertTime(this.props.message.date)} />
                     <ListItemSecondaryAction>
                         <IconButton className={classes.button} aria-label="Edit" onClick={this.toggleEdit}>
@@ -82,13 +85,9 @@ export default createFragmentContainer(withStyles(styles)(Message), {
             text
             edited
             date
-        }
-    `,
-    viewer: graphql`
-        fragment Message_viewer on User {
-            id
-            avatar
-            totalCount
+            user {
+                avatar
+            }
         }
     `
 });
