@@ -54,11 +54,11 @@ class ChatApp extends React.Component {
     }
 
     static propTypes = {
-        relay: PropTypes.object({
-            environment: PropTypes.string
+        relay: PropTypes.shape({
+            environment: PropTypes.object
         }),
-        chat: PropTypes.object({
-            totalCount: PropTypes.string
+        chat: PropTypes.shape({
+            totalCount: PropTypes.number
         }),
         classes: PropTypes.object
     };

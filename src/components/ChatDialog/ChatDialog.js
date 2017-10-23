@@ -36,7 +36,7 @@ class ChatDialog extends React.Component {
         );
     }
     static propTypes = {
-        chat: PropTypes.object({
+        chat: PropTypes.shape({
             messages: PropTypes.object
         }),
         classes: PropTypes.object

@@ -84,13 +84,14 @@ class Message extends React.Component {
         );
     }
     static propTypes = {
-        relay: PropTypes.object({
-            environment: PropTypes.string
+        relay: PropTypes.shape({
+            environment: PropTypes.object
         }),
-        message: PropTypes.object({
+        message: PropTypes.shape({
             user: PropTypes.object,
             text: PropTypes.string,
-            date: PropTypes.string
+            date: PropTypes.any,
+            edited: PropTypes.any
         }),
         chat: PropTypes.object,
         classes: PropTypes.object
