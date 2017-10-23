@@ -1,14 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import {installRelayDevTools} from 'relay-devtools';
-
 import {QueryRenderer, graphql} from 'react-relay';
 import {Environment, Network, RecordSource, Store} from 'relay-runtime';
 
 import ChatApp from './components/ChatApp/ChatApp';
-
-// installRelayDevTools();
 
 function fetchQuery(operation, variables) {
     return fetch('/graphql', {
@@ -41,12 +37,11 @@ ReactDOM.render(
             }
         `}
         variables={{}}
-        render={({error, props}) => {
+        render={({_error, props}) => {
             if (props) {
                 return <ChatApp chat={props.chat} />;
-            } else {
-                return <div>Loading</div>;
             }
+            return <div>Loading</div>;
         }}
     />,
     document.getElementById('app-root')

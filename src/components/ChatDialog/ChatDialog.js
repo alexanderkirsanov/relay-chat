@@ -1,13 +1,22 @@
 import React from 'react';
 import {createFragmentContainer, graphql} from 'react-relay';
 import List from 'material-ui/List';
+import PropTypes from 'prop-types';
 import {withStyles} from 'material-ui/styles';
 import Message from '../Message/Message';
-const styles = theme => ({
+const styles = () => ({
     list: {
         width: 500,
-        height: 600,
-        overflow: 'auto'
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        flex: 1
+    },
+    container: {
+        flex: '1 1 auto',
+        display: 'flex',
+        flexDirection: 'column-reverse',
+        overflowY: 'scroll'
     }
 });
 
@@ -20,8 +29,18 @@ class ChatDialog extends React.Component {
 
     render() {
         const {classes} = this.props;
-        return <List className={classes.list}>{this.renderMessages()}</List>;
+        return (
+            <div className={classes.container}>
+                <List className={classes.list}>{this.renderMessages()}</List>
+            </div>
+        );
     }
+    static propTypes = {
+        chat: PropTypes.object({
+            messages: PropTypes.object
+        }),
+        classes: PropTypes.object
+    };
 }
 
 export default createFragmentContainer(withStyles(styles)(ChatDialog), {
