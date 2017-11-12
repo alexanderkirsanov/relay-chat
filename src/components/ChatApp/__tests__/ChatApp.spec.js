@@ -11,6 +11,9 @@ describe('ChatApp tests', () => {
     });
     const chat = {
         totalCount: 1,
+        user: {
+            name: 'test'
+        },
         messages: {
             edges: [
                 {
@@ -56,6 +59,6 @@ describe('ChatApp tests', () => {
         jest.spyOn(NewMessageMutation, 'commit').mockImplementation(() => {});
         textField.simulate('keyPress', {key: 'Enter', target: {value: 'value'}});
         expect(NewMessageMutation.commit).toHaveBeenCalled();
-        expect(NewMessageMutation.commit.mock.calls[0]).toMatchObject([{environment: ''}, 'value', chat]);
+        expect(NewMessageMutation.commit.mock.calls[0]).toMatchObject([{environment: ''}, 'value', chat, 'test']);
     });
 });

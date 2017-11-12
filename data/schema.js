@@ -31,7 +31,7 @@ const {
     getChat,
     removeMessage
 } = require('./database');
-const {prop} = require('ramda');
+const {prop, pathOr} = require('ramda');
 
 const {nodeInterface, nodeField} = nodeDefinitions(
     globalId => {
@@ -56,14 +56,19 @@ const {nodeInterface, nodeField} = nodeDefinitions(
         return null;
     }
 );
+const getUserOrCurrent = (root, user) => getUser(pathOr(user.id, ['id'], root));
 
 const GraphQLUser = new GraphQLObjectType({
     name: 'User',
     fields: {
         id: globalIdField('User'),
+        name: {
+            type: GraphQLString,
+            resolve: (root, _, {user}) => getUserOrCurrent(root, user).id
+        },
         avatar: {
             type: GraphQLString,
-            resolve: () => getUser('me').avatar
+            resolve: (root, _, {user}) => getUserOrCurrent(root, user).avatar
         }
     },
     interfaces: [nodeInterface]
@@ -113,7 +118,9 @@ const GraphQLChat = new GraphQLObjectType({
         },
         user: {
             type: GraphQLUser,
-            resolve: () => getUser('me')
+            resolve: (root, _, {user}) => {
+                return getUser(user.id);
+            }
         }
     },
     interfaces: [nodeInterface]
@@ -132,7 +139,8 @@ const Query = new GraphQLObjectType({
 const GraphQLNewMessageMutation = mutationWithClientMutationId({
     name: 'NewMessage',
     inputFields: {
-        text: {type: new GraphQLNonNull(GraphQLString)}
+        text: {type: new GraphQLNonNull(GraphQLString)},
+        user: {type: new GraphQLNonNull(GraphQLString)}
     },
     outputFields: {
         messageEdge: {
@@ -150,8 +158,8 @@ const GraphQLNewMessageMutation = mutationWithClientMutationId({
             resolve: () => getChat()
         }
     },
-    mutateAndGetPayload: ({text}) => {
-        const localMessageId = addMessage(text);
+    mutateAndGetPayload: ({text, user}) => {
+        const localMessageId = addMessage(text, user);
         return {localMessageId};
     }
 });

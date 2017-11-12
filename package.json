@@ -22,6 +22,7 @@
   "dependencies": {
     "babel-plugin-relay": "^1.4.1",
     "babel-polyfill": "^6.26.0",
+    "body-parser": "^1.18.2",
     "compression": "1.7.0",
     "config": "1.26.1",
     "cookie-parser": "latest",
@@ -30,11 +31,17 @@
     "es6-error": "^4.0.2",
     "express": "4.14.0",
     "express-graphql": "^0.6.11",
+    "express-session": "^1.15.6",
+    "farce": "^0.2.3",
+    "found": "^0.3.5",
+    "found-relay": "^0.3.0-alpha.1",
     "graphql": "^0.11.7",
     "graphql-relay": "^0.5.3",
     "material-ui": "^1.0.0-beta.16",
     "material-ui-icons": "^1.0.0-beta.16",
     "monet": "^0.8.10",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "pluralize": "^7.0.0",
     "prop-types": "latest",
     "query-string": "^5.0.0",
@@ -42,11 +49,11 @@
     "react": "^15.6.2",
     "react-dom": "^15.6.2",
     "react-relay": "^1.4.1",
+    "relay-runtime": "latest",
     "request-promise": "latest",
     "style-loader": "^0.18.2",
     "svg-react-loader": "^0.4.5",
-    "winston": "2.3.1",
-    "relay-runtime": "latest"
+    "winston": "2.3.1"
   },
   "devDependencies": {
     "babel-core": "^6.13.2",
@@ -92,7 +99,8 @@
       "src/**/*.{js,jsx}",
       "data/**/*.{js,jsx}",
       "!node_modules/**",
-      "!dist/**"
+      "!dist/**",
+      "!**/__generated__/*"
     ]
   }
 }

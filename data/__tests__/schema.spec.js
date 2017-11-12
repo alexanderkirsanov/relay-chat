@@ -1,7 +1,9 @@
+import {createUser} from '../database';
+
 const {clearAll, addMessage} = require('../database');
 const {graphql} = require('graphql');
 const {schema} = require('../schema');
-
+const user = {id: 'userId', name: 'userName', avatar: 'avatar', password: 'password'};
 describe('schema tests', () => {
     beforeEach(clearAll);
     it('should initially show 0 messages', () => {
@@ -16,7 +18,8 @@ describe('schema tests', () => {
         });
     });
     it('should show all messages on request', () => {
-        addMessage('test');
+        createUser(user);
+        addMessage('test', 'userId');
         const query = `query { 
             chat {
                 totalCount,
@@ -37,18 +40,19 @@ describe('schema tests', () => {
             }
         }`;
         const rootValue = {};
-        return graphql(schema, query, rootValue).then(({data}) => {
+        const context = {user};
+        return graphql(schema, query, rootValue, context).then(({data}) => {
             expect(data.chat.totalCount).toBe(1);
             expect(data.chat.messages.edges[0].node).toMatchObject({
                 text: 'test',
                 edited: false
             });
-            expect(data.chat.messages.edges[0].node.user.avatar).toBe('user');
+            expect(data.chat.messages.edges[0].node.user.avatar).toBe('avatar');
         });
     });
     it('should run add message mutation correctly', () => {
         const query = `mutation { 
-            newMessage (input: {text: "test"}) {
+            newMessage (input: {text: "test", user: "userId"}) {
                 chat {
                     totalCount,
                     messages {
@@ -75,7 +79,8 @@ describe('schema tests', () => {
             }
         }`;
         const rootValue = {};
-        return graphql(schema, query, rootValue).then(({data}) => {
+        const context = {user};
+        return graphql(schema, query, rootValue, context).then(({data}) => {
             expect(data.newMessage.chat.messages.edges[0].node).toMatchObject({
                 text: 'test',
                 edited: false
@@ -85,7 +90,7 @@ describe('schema tests', () => {
     });
     it('should run edit message mutation correctly and update date and edited flag', () => {
         const addQuery = `mutation { 
-            newMessage (input: {text: "test"}) {
+            newMessage (input: {text: "test", user: "userId"}) {
                 chat {
                     totalCount,
                     messages {
@@ -127,7 +132,7 @@ describe('schema tests', () => {
     });
     it('should run remove message mutation correctly', () => {
         const addQuery = `mutation { 
-            newMessage (input: {text: "test"}) {
+            newMessage (input: {text: "test", user: "userId"}) {
                 chat {
                     totalCount,
                     messages {
@@ -143,7 +148,8 @@ describe('schema tests', () => {
         }`;
         const rootValue = {};
         let id;
-        return graphql(schema, addQuery, rootValue)
+        const context = {user};
+        return graphql(schema, addQuery, rootValue, context)
             .then(({data}) => {
                 const node = data.newMessage.chat.messages.edges[0].node;
                 id = node.id;

@@ -107,6 +107,7 @@ export default createFragmentContainer(withStyles(styles)(Message), {
             date
             user {
                 avatar
+                name
             }
         }
     `

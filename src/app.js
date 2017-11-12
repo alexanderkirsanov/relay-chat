@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import {QueryRenderer, graphql} from 'react-relay';
+import BrowserProtocol from 'farce/lib/BrowserProtocol';
+import queryMiddleware from 'farce/lib/queryMiddleware';
+import createFarceRouter from 'found/lib/createFarceRouter';
+import createRender from 'found/lib/createRender';
+import {Resolver} from 'found-relay';
 import {Environment, Network, RecordSource, Store} from 'relay-runtime';
-
-import ChatApp from './components/ChatApp/ChatApp';
+import routes from './routes';
 
 function fetchQuery(operation, variables) {
     return fetch('/graphql', {
@@ -12,13 +14,20 @@ function fetchQuery(operation, variables) {
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({
             query: operation.text,
             variables
         })
-    }).then(response => {
-        return response.json();
-    });
+    })
+        .then(response => {
+            if (!response.ok) {
+                window.location.href = '/login';
+                return;
+            }
+            return response.json();
+        })
+        .catch(e => console.log(e));
 }
 
 const modernEnvironment = new Environment({
@@ -26,23 +35,11 @@ const modernEnvironment = new Environment({
     store: new Store(new RecordSource())
 });
 
-ReactDOM.render(
-    <QueryRenderer
-        environment={modernEnvironment}
-        query={graphql`
-            query appQuery {
-                chat {
-                    ...ChatApp_chat
-                }
-            }
-        `}
-        variables={{}}
-        render={({_error, props}) => {
-            if (props) {
-                return <ChatApp chat={props.chat} />;
-            }
-            return <div>Loading</div>;
-        }}
-    />,
-    document.getElementById('app-root')
-);
+const Router = createFarceRouter({
+    historyProtocol: new BrowserProtocol(),
+    historyMiddlewares: [queryMiddleware],
+    routeConfig: routes,
+    render: createRender({})
+});
+
+ReactDOM.render(<Router resolver={new Resolver(modernEnvironment)} />, document.getElementById('app-root'));

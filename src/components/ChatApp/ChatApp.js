@@ -25,7 +25,7 @@ const styles = () => ({
 
 class ChatApp extends React.Component {
     _handleTextInputSave = text => {
-        NewMessageMutation.commit(this.props.relay.environment, text, this.props.chat);
+        NewMessageMutation.commit(this.props.relay.environment, text, this.props.chat, this.props.chat.user.name);
     };
 
     render() {
@@ -71,6 +71,7 @@ export default createFragmentContainer(withStyles(styles)(ChatApp), {
             totalCount
             user {
                 avatar
+                name
             }
             ...ChatDialog_chat
         }

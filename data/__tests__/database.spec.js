@@ -5,6 +5,7 @@ const {
     getMessages,
     removeMessage,
     getUsers,
+    createUser,
     getUser,
     getChat,
     clearAll
@@ -58,10 +59,14 @@ describe('Basic DB tests', () => {
     });
     describe('Users operations tests', () => {
         it('should return all users', () => {
-            expect(getUsers()).toEqual([{id: 'me', avatar: 'user'}]);
+            expect(getUsers()).toEqual([{id: 'me', avatar: 'user', password: 'test', name: 'me'}]);
         });
         it('should return a user by id', () => {
             expect(getUser('me').id).toEqual('me');
+        });
+        it('should create new user', () => {
+            createUser({id: 'test', avatar: 'test', password: 'test'});
+            expect(getUser('test').id).toEqual('test');
         });
         it('should return a chat name', () => {
             expect(getChat()).toEqual('mainChat');

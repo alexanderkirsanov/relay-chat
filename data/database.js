@@ -10,7 +10,15 @@ class Message {
     }
 }
 
-class User {}
+class User {
+    constructor(id, name, avatar, password) {
+        this.id = id;
+        this.avatar = avatar;
+        this.password = password;
+        this.name = name;
+    }
+}
+
 class Chat {}
 
 let db = {};
@@ -30,14 +38,14 @@ const deleteOp = curry((table, condition) => {
 });
 const clearAll = () => {
     db = {
-        Users: [{id: 'me', avatar: 'user'}],
+        Users: [createUser({id: 'me', name: 'me', avatar: 'user', password: 'test'})],
         Messages: []
     };
     nextMessageId = 0;
 };
-
+const createUserFromPayload = ({id, name, avatar, password}) => new User(id, name, avatar, password);
 const byId = eId => ({id}) => id === eId;
-const createMessage = text => new Message(`${nextMessageId++}`, undefined, undefined, text);
+const createMessage = (text, user) => new Message(`${nextMessageId++}`, undefined, undefined, text, user);
 const findById = eId => find(byId(eId));
 
 const addMessage = pipe(createMessage, write('Messages'), prop('id'));
@@ -50,6 +58,7 @@ const getMessages = (condition = identity) => read('Messages', condition);
 const getMessage = id => getMessages(findById(id));
 const removeMessage = id => deleteOp('Messages', pipe(byId(id), not));
 const getUsers = (condition = identity) => read('Users', condition);
+const createUser = pipe(createUserFromPayload, write('Users'));
 const getUser = pipe(findById, getUsers);
 
 const getChat = () => {
@@ -68,5 +77,6 @@ module.exports = {
     getUsers,
     getUser,
     getChat,
-    clearAll
+    clearAll,
+    createUser
 };
