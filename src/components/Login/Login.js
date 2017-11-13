@@ -1,9 +1,12 @@
 import Button from 'material-ui/Button';
 import TextField from 'material-ui/TextField';
-import React, {Component} from 'react';
+import React from 'react';
 import {FormControlLabel} from 'material-ui/Form';
 import {withRouter} from 'found';
 import {Checkbox} from 'material-ui';
+import PropTypes from 'prop-types';
+import {withStyles} from 'material-ui/styles';
+
 const register = (username, password) =>
     fetch('/register', {
         method: 'post',
@@ -19,16 +22,24 @@ const login = (username, password) =>
         body: `username=${username}&password=${password}`
     });
 const redirectTo = router => path => router.replace(path);
-class Login extends Component {
+
+const styles = {
+    loginButton: {
+        margin: 15
+    }
+};
+
+class Login extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            username: '',
-            password: '',
-            register: false,
-            error: ''
-        };
     }
+    state = {
+        username: '',
+        password: '',
+        register: false,
+        error: ''
+    };
+
     handleClick = () => {
         const {username, password} = this.state;
         if (this.state.register) {
@@ -39,6 +50,7 @@ class Login extends Component {
                 .then(redirectTo(this.props.router));
         }
     };
+
     render() {
         return (
             <div>
@@ -57,15 +69,23 @@ class Login extends Component {
                         }
                         label="Register"
                     />
-                    <Button raised color="primary" style={style} onClick={event => this.handleClick(event)}>
+                    <Button
+                        raised
+                        color="primary"
+                        className={this.props.classes.loginButton}
+                        onClick={event => this.handleClick(event)}
+                    >
                         Submit
                     </Button>
                 </div>
             </div>
         );
     }
+
+    static propTypes = {
+        router: PropTypes.object,
+        classes: PropTypes.object
+    };
 }
-const style = {
-    margin: 15
-};
-export default withRouter(Login);
+
+export default withRouter(withStyles(styles)(Login));

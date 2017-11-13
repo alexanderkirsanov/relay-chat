@@ -40,39 +40,42 @@ class Message extends React.Component {
         EditMessageMutation.commit(this.props.relay.environment, text, this.props.message);
     };
     render() {
-        const {classes} = this.props;
+        const {classes, message, user} = this.props;
         const toUpperCase = str => str.toUpperCase();
         const getAvatarText = compose(toUpperCase, prop('0'));
         const convertTime = time => {
             const date = new Date(+time);
             return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.toTimeString().substr(0, 5)}`;
         };
-        const color = this.props.message.edited ? '#e4f3ff' : '#FAFAFA';
+        const color = message.edited ? '#e4f3ff' : '#FAFAFA';
         const style = {backgroundColor: color};
+        const canEdit = message.user.name === user.name;
         return (
             <div>
                 <ListItem dense button className={classes.listItem} style={style}>
                     <Avatar className={classes.avatar}>
                         {' '}
-                        {getAvatarText(this.props.message.user ? this.props.message.user.avatar : 'User')}{' '}
+                        {getAvatarText(message.user ? message.user.avatar : 'User')}{' '}
                     </Avatar>
                     <ListItemText
                         className={classes.text}
-                        primary={this.props.message.text}
-                        secondary={convertTime(this.props.message.date)}
+                        primary={message.text}
+                        secondary={convertTime(message.date)}
                     />
-                    <ListItemSecondaryAction>
-                        <IconButton className={classes.button} aria-label="Edit" onClick={this.toggleEdit}>
-                            <ModeEditIcon />
-                        </IconButton>
-                        <IconButton className={classes.button} aria-label="Delete" onClick={this.removeMessage}>
-                            <DeleteIcon />
-                        </IconButton>
-                    </ListItemSecondaryAction>
+                    {canEdit ? (
+                        <ListItemSecondaryAction>
+                            <IconButton className={classes.button} aria-label="Edit" onClick={this.toggleEdit}>
+                                <ModeEditIcon />
+                            </IconButton>
+                            <IconButton className={classes.button} aria-label="Delete" onClick={this.removeMessage}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </ListItemSecondaryAction>
+                    ) : null}
                 </ListItem>
                 {this.state.isEditing && (
                     <EditMessageInput
-                        text={this.props.message.text}
+                        text={message.text}
                         onSave={value => {
                             this.handleTextInput(value);
                             this.toggleEdit();
@@ -94,6 +97,7 @@ class Message extends React.Component {
             edited: PropTypes.any
         }),
         chat: PropTypes.object,
+        user: PropTypes.object,
         classes: PropTypes.object
     };
 }

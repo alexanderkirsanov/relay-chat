@@ -33,7 +33,7 @@ describe('ChatDialog tests', () => {
                 ]
             }
         };
-        const component = mount(<ChatDialog chat={chat} />);
+        const component = mount(<ChatDialog chat={chat} user={{name: 'test'}} />);
         expect(component.find(Message).length).toBe(2);
     });
 });

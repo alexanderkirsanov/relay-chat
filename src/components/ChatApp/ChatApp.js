@@ -23,8 +23,8 @@ const styles = () => ({
     }
 });
 
-class ChatApp extends React.Component {
-    _handleTextInputSave = text => {
+class ChatApp extends React.PureComponent {
+    handleTextInputSave = text => {
         NewMessageMutation.commit(this.props.relay.environment, text, this.props.chat, this.props.chat.user.name);
     };
 
@@ -36,12 +36,12 @@ class ChatApp extends React.Component {
                 <h1>
                     {messagesCount} {pluralize('item', messagesCount)}
                 </h1>
-                <ChatDialog chat={this.props.chat} />
+                <ChatDialog chat={this.props.chat} user={this.props.chat.user} />
                 <TextField
                     placeholder="Enter your message..."
                     onKeyPress={event => {
                         if (event.key === 'Enter') {
-                            this._handleTextInputSave(event.target.value);
+                            this.handleTextInputSave(event.target.value);
                             event.target.value = '';
                             event.preventDefault();
                         }
@@ -58,7 +58,8 @@ class ChatApp extends React.Component {
             environment: PropTypes.object
         }),
         chat: PropTypes.shape({
-            totalCount: PropTypes.number
+            totalCount: PropTypes.number,
+            user: PropTypes.object
         }),
         classes: PropTypes.object
     };

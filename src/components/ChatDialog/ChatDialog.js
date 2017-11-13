@@ -23,7 +23,7 @@ const styles = () => ({
 class ChatDialog extends React.PureComponent {
     renderMessages() {
         return this.props.chat.messages.edges.map(edge => (
-            <Message key={edge.node.id} message={edge.node} chat={this.props.chat} />
+            <Message key={edge.node.id} message={edge.node} chat={this.props.chat} user={this.props.user} />
         ));
     }
 
@@ -39,6 +39,7 @@ class ChatDialog extends React.PureComponent {
         chat: PropTypes.shape({
             messages: PropTypes.object
         }),
+        user: PropTypes.object,
         classes: PropTypes.object
     };
 }
